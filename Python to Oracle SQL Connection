@@ -1,0 +1,72 @@
+import os
+import pandas as pd
+import cx_Oracle
+import logging
+from datetime import datetime
+
+# Set up logging
+log_folder = "LOG"
+if not os.path.exists(log_folder):
+    os.makedirs(log_folder)
+
+log_file = os.path.join(log_folder, f"log_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt")
+logging.basicConfig(filename=log_file, level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S')
+
+def log_and_execute_query(cursor, query):
+    try:
+        logging.info(f"Executing query:\n{query}")
+        cursor.execute(query)
+        logging.info("Query execution successful.")
+    except cx_Oracle.Error as e:
+        error_msg = f"Error executing the query: {e}"
+        logging.error(error_msg)
+        raise Exception(error_msg)
+
+username = "frmdata"
+password = "Pws4-ShmT5sy"
+hostname = "apstest.maxim-ic.com"
+port = "1521"
+SID = "apstest"
+
+connection_string = f"{username}/{password}@//{hostname}:{port}/{SID}"
+print(connection_string)
+
+logging.info(f"Connecting to the database: {connection_string}")
+
+try:
+    connection = cx_Oracle.connect(connection_string)
+    cursor = connection.cursor()
+
+    # Use the ROWNUM clause to limit the result to 10 rows
+    query = """SELECT SCHEMA_NM, METRIC_ID, GRP_NM, CURR_CNT, HIST_CNT, RUN_DT 
+    FROM metric_log WHERE ROWNUM <= 10 AND METRIC_ID = 'METRIC_PUSHED_TO_PRCMNTPLAN_VW_PUSHED:ROWS' 
+    AND GRP_NM = 'FP_MRP_ENGINE_RUN.END_BATCH' 
+    ORDER BY run_dt DESC"""
+
+    log_and_execute_query(cursor, query)
+
+    rows = cursor.fetchall()
+
+    # Create DataFrame using cursor.description for column names
+    column_names = [col[0] for col in cursor.description]
+    df = pd.DataFrame(rows, columns=column_names)
+
+    # Close the cursor and connection
+    cursor.close()
+    connection.close()
+    print("Data from the Oracle database:")
+    print(df)
+    # Save the DataFrame to a CSV file
+    output_folder = "OUTPUT_CSV"
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
+    output_file = os.path.join(output_folder, "output.csv")
+    df.to_csv(output_file, index=False)
+
+    logging.info(f"Data saved to {output_file}")
+
+except Exception as e:
+    logging.exception("An error occurred:")
