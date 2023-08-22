@@ -1,0 +1,89 @@
+'''import pandas as pd
+
+
+
+def copy_and_delete_columns(source_df, target_df):
+    # Calculate the number of columns to copy (excluding the first column A)
+    num_cols_to_copy = len(source_df.columns) - 1
+
+    # Delete the second column from the target DataFrame (excluding the A column)
+    target_df.drop(target_df.columns[1], axis=1, inplace=True)
+
+    # Merge the data from the source DataFrame to the right side of the target DataFrame
+    target_df = pd.concat([target_df, source_df.iloc[:, -1]], axis=1)
+H
+    return target_df
+
+def process_excel_files(Hold_Stagnant_Hourly_WIP_14Days_file_path, Hold_Stagnant_Hourly_WIP_91Days_file_path, sheets_to_update):
+    # Read data from Hold_Stagnant_Hourly_WIP_14Days.xlsx and Hold_Stagnant_Hourly_WIP_91Days.xlsx
+    df_Hold_Stagnant_Hourly_WIP_14Days = pd.read_excel(Hold_Stagnant_Hourly_WIP_14Days_file_path, sheet_name=None)
+    df_Hold_Stagnant_Hourly_WIP_91Days = pd.read_excel(Hold_Stagnant_Hourly_WIP_91Days_file_path, sheet_name=None)
+
+    # Loop through all sheets and apply the copy_and_delete_columns function
+    for sheet_name in df_Hold_Stagnant_Hourly_WIP_14Days:
+        if sheet_name in df_Hold_Stagnant_Hourly_WIP_91Days and sheet_name in sheets_to_update:
+            df_Hold_Stagnant_Hourly_WIP_91Days[sheet_name] = copy_and_delete_columns(df_Hold_Stagnant_Hourly_WIP_14Days[sheet_name], df_Hold_Stagnant_Hourly_WIP_91Days[sheet_name])
+
+    # Save the updated data back to Hold_Stagnant_Hourly_WIP_91Days.xlsx
+    with pd.ExcelWriter(Hold_Stagnant_Hourly_WIP_91Days_file_path) as writer:
+        for sheet_name, df in df_Hold_Stagnant_Hourly_WIP_91Days.items():
+            df.to_excel(writer, sheet_name=sheet_name, index=False)
+
+# Source file path for Hold_Stagnant_Hourly_WIP_14Days.xlsx
+Hold_Stagnant_Hourly_WIP_14Days_file_path = r"C:/Users/KShirnat/OneDrive - Analog Devices, Inc/Projects/Python Program to TEST/Hold_Stagnant_Hourly_WIP_14Days.xlsx"
+
+# Source file path for Hold_Stagnant_Hourly_WIP_91Days.xlsx
+Hold_Stagnant_Hourly_WIP_91Days_file_path = r"C:/Users/KShirnat/OneDrive - Analog Devices, Inc/Projects/Python Program to TEST/Hold_Stagnant_Hourly_WIP_91Days.xlsx"
+
+# Specify the sheets you want to update
+sheets_to_update = ["Stagnant>6hrs", "Moves_Lost"]  # Add or remove sheet names as needed
+
+# Process the Excel files for the specified sheet names
+process_excel_files(Hold_Stagnant_Hourly_WIP_14Days_file_path, Hold_Stagnant_Hourly_WIP_91Days_file_path, sheets_to_update)
+
+'''
+
+
+
+
+import pandas as pd
+
+def copy_and_delete_columns(source_df, target_df):
+    # Calculate the number of columns to copy (excluding the first column A)
+    num_cols_to_copy = len(source_df.columns) - 1
+
+    # Delete the second column from the target DataFrame (excluding the A column)
+    target_df.drop(target_df.columns[1], axis=1, inplace=True)
+
+    # Merge the data from the source DataFrame to the right side of the target DataFrame
+    target_df = pd.concat([target_df, source_df.iloc[:, -1]], axis=1)
+
+    return target_df
+
+def process_excel_files(Hold_Stagnant_Hourly_WIP_14Days_file_path, Hold_Stagnant_Hourly_WIP_91Days_file_path, sheets_to_update):
+    # Read data from Hold_Stagnant_Hourly_WIP_14Days.xlsx and Hold_Stagnant_Hourly_WIP_91Days.xlsx
+    df_Hold_Stagnant_Hourly_WIP_14Days = pd.read_excel(Hold_Stagnant_Hourly_WIP_14Days_file_path, sheet_name=None)
+    df_Hold_Stagnant_Hourly_WIP_91Days = pd.read_excel(Hold_Stagnant_Hourly_WIP_91Days_file_path, sheet_name=None)
+
+    # Loop through all sheets and apply the copy_and_delete_columns function
+    for sheet_name in df_Hold_Stagnant_Hourly_WIP_14Days:
+        if sheet_name in df_Hold_Stagnant_Hourly_WIP_91Days and sheet_name in sheets_to_update:
+            df_Hold_Stagnant_Hourly_WIP_91Days[sheet_name] = copy_and_delete_columns(df_Hold_Stagnant_Hourly_WIP_14Days[sheet_name], df_Hold_Stagnant_Hourly_WIP_91Days[sheet_name])
+
+    # Save the updated data back to Hold_Stagnant_Hourly_WIP_91Days.xlsx
+    with pd.ExcelWriter(Hold_Stagnant_Hourly_WIP_91Days_file_path) as writer:
+        for sheet_name, df in df_Hold_Stagnant_Hourly_WIP_91Days.items():
+            df.to_excel(writer, sheet_name=sheet_name, index=False)
+
+# Source file path for Hold_Stagnant_Hourly_WIP_14Days.xlsx
+Hold_Stagnant_Hourly_WIP_14Days_file_path = r"C:/Users/KShirnat/OneDrive - Analog Devices, Inc/Projects/Python Program to TEST/Hold_Stagnant_Hourly_WIP_14Days.xlsx"
+
+# Source file path for Hold_Stagnant_Hourly_WIP_91Days.xlsx
+Hold_Stagnant_Hourly_WIP_91Days_file_path = r"C:/Users/KShirnat/OneDrive - Analog Devices, Inc/Projects/Python Program to TEST/Hold_Stagnant_Hourly_WIP_91Days.xlsx"
+
+# Specify the sheets you want to update
+sheets_to_update = ["Stagnant>6hrs", "Moves_Lost"]  # Add or remove sheet names as needed
+
+# Process the Excel files for the specified sheet names
+process_excel_files(Hold_Stagnant_Hourly_WIP_14Days_file_path, Hold_Stagnant_Hourly_WIP_91Days_file_path, sheets_to_update)
+
