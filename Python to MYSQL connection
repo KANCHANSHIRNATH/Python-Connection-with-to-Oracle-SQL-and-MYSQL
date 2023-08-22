@@ -1,0 +1,19 @@
+import pandas as pd
+import mysql.connector
+connection = mysql.connector.connect(
+    host="127.0.0.1",
+    user="root",
+    password="root",
+    database="kanchandb"
+)
+cursor = connection.cursor()
+query = "SELECT * FROM Example"
+cursor.execute(query)
+rows = cursor.fetchall()
+for row in rows:
+    print(row)
+    
+df = pd.DataFrame(rows, columns=cursor.column_names)
+cursor.close()
+connection.close()
+print(df)
